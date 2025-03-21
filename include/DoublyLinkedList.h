@@ -32,18 +32,6 @@ private:
     Nodo* _actual;
     int _size;
 
-    // O(n)
-
-    void setDefault(){
-        while(!_primero->_siguiente->null()){
-            Nodo* aux = this->_primero;
-            this->_primero->_anterior = nullptr;
-            this->_primero->_siguiente = nullptr;
-            this->_primero = aux->_siguiente;
-            this->_size--;
-        }
-    }
-
 public:
 
   	// Constructores
@@ -59,12 +47,21 @@ public:
     DoublyLinkedList& operator=(const DoublyLinkedList& otro){
     	if(this == &otro){return *this;}
         else {
-          	this->setDefault();
+          	*this = DoublyLinkedList();
         	for(int i = 0; i < otro.size(); i++)
                   this->push_back(otro.at(i));
 
             return *this;
         }
+    }
+
+	~DoublyLinkedList(){
+    	while (!this->empty() && this->_primero->_siguiente) {
+    		Nodo* aux = this->_primero;
+    		this->_primero = this->_primero->_siguiente;
+    		delete aux;
+    	}
+    	delete this->_primero;
     }
 
     // Información sobre la estructura (O(1))
@@ -158,24 +155,28 @@ public:
     // Acceso arbitrario (O(n))
 
 	const T& at(int pos) const {
-    	if(pos == 0) return this->front();
-    	if(pos == this->size() - 1) return this->back();
-    	else if(!(pos < 0 || pos >= this->size())){
-    		Nodo* aux = this->_primero;
-    		for(int i = 0; i < pos; i++)
-    			aux = aux->_siguiente;
-    		return (*aux);
+    	if (!this->empty()) {
+    		if (pos == 0) return this->front();
+    		else if (pos == this->size() - 1) return this->back();
+    		else if (!(pos < 0 || pos >= this->size())) {
+    			Nodo* aux = this->_primero;
+    			for (int i = 0; i < pos; i++)
+    				aux = aux->_siguiente;
+    			return (*aux);
+    		}
     	}
     }
 
 	T& at(int pos) {
-    	if(pos == 0) return this->front();
-    	if(pos == this->size() - 1) return this->back();
-    	else if(!(pos < 0 || pos >= this->size())){
-    		Nodo* aux = this->_primero;
-    		for(int i = 0; i < pos; i++)
-    			aux = aux->_siguiente;
-    		return (*aux);
+    	if (!this->empty()) {
+    		if (pos == 0) return this->front();
+    		else if (pos == this->size() - 1) return this->back();
+    		else if (!(pos < 0 || pos >= this->size())) {
+    			Nodo* aux = this->_primero;
+    			for (int i = 0; i < pos; i++)
+    				aux = aux->_siguiente;
+    			return aux->_dato;
+    		}
     	}
     }
 
@@ -183,18 +184,17 @@ public:
     T& operator[](int pos) {return this->at(pos);}
 
     void insert(int pos, const T& dato){
-    	if(pos == 0) this->push_front(dato);
-        if(pos == this->size()) this->push_back(dato);
-        else if(!(pos < 0 || pos > this->size())){
-          	Nodo* aux = this->_primero;
-            for(int i = 0; i < pos; i++){
-                if(i > this->size() - 1) this->push_back(T());
-                aux = aux->_siguiente;
-            }
-            Nodo* nuevo = new Nodo(dato, aux, aux->_anterior);
-            aux->_anterior->_siguiente = nuevo;
-            aux->_anterior = nuevo;
-        }
+    	if (pos == 0) this->push_front(dato);
+    	else if (pos == this->size()) this->push_back(dato);
+    	else if (!(pos < 0 || pos > this->size())) {
+    		Nodo* aux = this->_primero;
+    		for (int i = 0; i < pos - 1; i++)
+    			aux = aux->_siguiente;
+    		Nodo* nuevo = new Nodo(dato, aux->_siguiente, aux);
+    		nuevo->_siguiente->_anterior = nuevo;
+    		nuevo->_anterior->_siguiente = nuevo;
+    		this->_size++;
+    	}
     }
 
     // Búsqueda (O(n))
@@ -208,23 +208,8 @@ public:
             curr++;
             principio = principio->_siguiente;
         }
+    	return pos;
     }
-
-    // "Métodos de iteradortes" (O(1))
-
-    const T& begin() const {this->_actual = this->_primero; return this->front();}
-    const T& end() const {this->_actual = nullptr; return this->back();}
-    const T& next() const {this->_actual = this->_actual->_siguiente; return this->_actual->_siguiente->_dato;}
-    const T& prev() const {this->_actual = this->_actual->_anterior; return this->_actual->_anterior->_dato;}
-    T& begin() {this->_actual = this->_primero; return this->front();}
-    T& end() {this->_actual = nullptr; return this->back();}
-    T& next() {this->_actual = this->_actual->_siguiente; return this->_actual->_siguiente->_dato;}
-    T& prev() {this->_actual = this->_actual->_anterior; return this->_actual->_anterior->_dato;}
-
-    // Posición de puntero current (O(n))
-
-    int whereAmI() const {return this->find(this->_actual);}
-
 
 };
 

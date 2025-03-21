@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < 20; i++)
         lista.push_back(distribution(generator));
 
-    for (auto elem = lista.begin(); elem != lista.end(); elem = lista.next())
-        cout << elem << " ";
+    for (int i = 0; i < lista.size(); i++)
+        cout << lista.at(i) << " ";
 
 }
