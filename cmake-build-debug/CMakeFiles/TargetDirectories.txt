@@ -1,0 +1,4 @@
+/home/alejandro/CLionProjects/DoublyLinkedList/cmake-build-debug/CMakeFiles/DoublyLinkedList.dir
+/home/alejandro/CLionProjects/DoublyLinkedList/cmake-build-debug/CMakeFiles/DLLExe.dir
+/home/alejandro/CLionProjects/DoublyLinkedList/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/alejandro/CLionProjects/DoublyLinkedList/cmake-build-debug/CMakeFiles/rebuild_cache.dir
